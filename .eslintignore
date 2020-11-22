@@ -1,0 +1,10 @@
+node_modules/
+yarn.lock
+*.snap
+.prettierignore
+.eslintignore
+
+/dist/
+/index.d.ts
+
+!.eslintrc.js

@@ -2,10 +2,11 @@
 
 exports[`redux-fluent E2E should add a todo 1`] = `
 Object {
+  "errors": Array [],
   "todos": Array [
     Object {
+      "completed": false,
       "id": "first-todo-id",
-      "status": "pending",
     },
   ],
 }
@@ -13,10 +14,11 @@ Object {
 
 exports[`redux-fluent E2E should delete a todo 1`] = `
 Object {
+  "errors": Array [],
   "todos": Array [
     Object {
+      "completed": true,
       "id": "first-todo-id",
-      "status": "pending",
     },
   ],
 }
@@ -24,10 +26,11 @@ Object {
 
 exports[`redux-fluent E2E should delete a todo 2`] = `
 Object {
+  "errors": Array [],
   "todos": Array [
     Object {
+      "completed": true,
       "id": "first-todo-id",
-      "status": "pending",
     },
   ],
 }
@@ -35,6 +38,7 @@ Object {
 
 exports[`redux-fluent E2E should delete a todo 3`] = `
 Object {
+  "errors": Array [],
   "todos": Array [],
 }
 `;

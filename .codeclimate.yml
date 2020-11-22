@@ -1,4 +1,4 @@
-version: "2"
+version: '2'
 
 plugins:
   nodesecurity:
@@ -14,7 +14,7 @@ plugins:
     enabled: true
     config:
       languages:
-      - javascript
+        - javascript
 
   eslint:
     enabled: true
@@ -23,10 +23,10 @@ plugins:
     enabled: true
 
 exclude_patterns:
-  - "LICENSE"
-  - ".*"
-  - "**/*.*"
-  - "!**/*.js"
-  - "!**/*.ts"
-  - "!**/*.md"
-  - "CHANGELOG.md"
+  - 'LICENSE'
+  - '.*'
+  - '**/*.*'
+  - '!**/*.js'
+  - '!**/*.ts'
+  - '!**/*.md'
+  - 'CHANGELOG.md'

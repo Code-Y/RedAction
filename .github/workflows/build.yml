@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node: [ '12' ]
+        node: ['14']
     name: Node ${{ matrix.node }}
     steps:
       - uses: actions/checkout@v1
@@ -22,20 +22,22 @@ jobs:
           node-version: ${{ matrix.node }}
 
       - name: Install
-        run: yarn install --silent --frozen-lockfile
+        run: yarn install --silent --frozen-lockfile --prefer-offline
 
-      - name: Lint
-        run: yarn lint
+      - name: Eslint
+        run: yarn eslint . --max-warnings 0
 
-      - name: Test
-        run: yarn test
+      - name: Prettier
+        run: yarn prettier . --check
 
       - name: Publish Testing Reports
-        uses: paambaati/codeclimate-action@v2.3.0
+        uses: paambaati/codeclimate-action@v2.7.4
         env:
           CC_TEST_REPORTER_ID: ${{ secrets.CODE_CLIMATE_TOKEN }}
         with:
-          coverageCommand: cat coverage/lcov.info
+          coverageCommand: yarn test
+          coverageLocations: |
+            ${{github.workspace}}/coverage/*.lcov:lcov
 
       - name: Build
         run: NODE_ENV=production yarn build --bail

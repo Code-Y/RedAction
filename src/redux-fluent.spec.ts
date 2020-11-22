@@ -1,38 +1,17 @@
-import { expect } from 'chai';
-import {
-  createAction,
-  combineReducers,
-  ofType,
-  createReducer,
-  withConfig,
-} from './redux-fluent';
-
+import { createAction, ofType, createReducer } from './redux-fluent';
 
 describe('redux-fluent', () => {
   describe('Smoke Test', () => {
     it('should export a function { createAction }', () => {
-      expect(createAction)
-        .to.be.a('function');
-    });
-
-    it('should export a function { combineReducers }', () => {
-      expect(combineReducers)
-        .to.be.a('function');
+      expect(createAction).toBeInstanceOf(Function);
     });
 
     it('should export a function { ofType }', () => {
-      expect(ofType)
-        .to.be.a('function');
+      expect(ofType).toBeInstanceOf(Function);
     });
 
     it('should export a function { createReducer }', () => {
-      expect(createReducer)
-        .to.be.a('function');
-    });
-
-    it('should export a function { withConfig }', () => {
-      expect(withConfig)
-        .to.be.a('function');
+      expect(createReducer).toBeInstanceOf(Function);
     });
   });
 });

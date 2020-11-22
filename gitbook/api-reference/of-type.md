@@ -1,6 +1,7 @@
 # ofType
 
-A matcher to nail down your handler to a specific set of actions  
+Helps you narrow down the set of actions
+to which your `handler` should respond to.
 
 ```typescript
 import { ofType } from 'redux-fluent';
@@ -10,15 +11,15 @@ ofType(...types);
 
 ## Arguments
 
-  - variadic
-  - `string | { type: string } | { toString(): string }` - the action types
+- variadic
+- `string | { type: string } | { toString(): string }` - the action types
 
 ## Returns
 
- ```typescript
-({ 
+```typescript
+({
   map: (handler) => Reducer,
-})
+});
 ```
 
 ## Usage
@@ -26,9 +27,7 @@ ofType(...types);
 Applies the `mapFn` if the given action matches with the expected types.
 
 ```typescript
-ofType('foo', 'bar', baz).map(mapFn)
+ofType('foo', 'bar', baz).map(mapFn);
 ```
 
 - applies `mapFn` if `action.type` is either `foo`, `bar` or `baz.type | baz.toString()`
-
-

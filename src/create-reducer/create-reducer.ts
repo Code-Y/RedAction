@@ -1,61 +1,47 @@
-// eslint-disable-next-line no-unused-vars
-import { AnyAction } from 'redux';
+import { AnyAction, Reducer } from 'redux';
 
+type GetDefaultState<S> = (state: undefined, action: AnyAction) => S;
 
-interface ReduxFluentActionHandler<S = any, C = any> {
-  <A extends AnyAction>(state: S, action: A, config: C): S;
-}
-
-export interface ReduxFluentReducer<N extends string = string, S = any> {
-  readonly type: N;
-  (state: S | undefined, action: AnyAction): S;
-}
-
-export type RFR<N extends string = string, S = any> = ReduxFluentReducer<N, S>;
-export type RFAH<S = any, C = any> = ReduxFluentActionHandler<S, C>;
-type GetDefaultState<S = any, C = any> = (state: void, action: AnyAction, config: C) => S;
-
-
-interface Context<S = any, C = any> {
-  config: C,
-  handlers: ReduxFluentActionHandler<S, C>[],
-  getDefaultState: GetDefaultState<S, C>;
-}
-
-const createContext = <S, C>(): Context<S, C> => ({
-  config: undefined,
-  getDefaultState: undefined,
-  handlers: [],
+const createContext = <S>() => ({
+  getDefaultState: undefined as GetDefaultState<S>,
+  handlers: [] as Reducer<S>[],
 });
 
-export function createReducer<N extends string, S = any, C = void>(name: N) {
-  const context = createContext<S, C>();
-  const orDefault = (state: S | undefined, action: AnyAction, config: C): S => (
-    state === undefined ? context.getDefaultState(undefined, action, config) : state
-  );
+export function createReducer<N extends string, S = unknown>(name: N) {
+  const context = createContext<S>();
 
-  function $reducer(state: S | undefined, action: AnyAction): S {
-    return context.handlers.reduce(
-      ($state, handler) => handler($state, action, context.config),
-      orDefault(state, action, context.config),
+  const orDefault: Reducer<S> = (state, action) =>
+    state === undefined
+      ? context.getDefaultState(state as undefined, action)
+      : state;
+
+  const $reducer: Reducer<S> & { type: string } = (state, action) =>
+    context.handlers.reduce(
+      ($state, handler) => handler($state, action),
+      orDefault(state, action),
     );
-  }
 
-  Object.defineProperties($reducer, {
-    /* private */ $$context: { value: context },
-    name: { configurable: true, value: `reducer('${name}')` },
-    type: { enumerable: true, value: name },
+  Object.defineProperty($reducer, '$$context', {
+    value: context,
   });
 
+  if (process.env.NODE_ENV !== 'production') {
+    Object.defineProperty($reducer, 'name', {
+      configurable: true,
+      value: `reducer('${name}')`,
+    });
+  }
+
+  $reducer.type = name;
+
   return {
-    actions(...handlers: RFAH<S, C>[]) {
+    actions(...handlers: Reducer<S>[]) {
       context.handlers = handlers;
 
       return {
-        default(getDefaultState: GetDefaultState<S, C> = () => null): RFR<N, S> {
+        default(getDefaultState: GetDefaultState<S> = () => null) {
           context.getDefaultState = getDefaultState;
 
-          // @ts-ignore TS2322 property `type` is defined in Object.defineProperties($reducer, ...)
           return $reducer;
         },
       };

@@ -1,68 +1,107 @@
-// eslint-disable-next-line no-unused-vars
 import { ErrorFSA, FSA } from 'flux-standard-action';
-import { createAliasCreator } from './create-alias-creator';
 
+type Formatter<T, R> = (rawPayload: unknown, rawMeta: unknown, type: T) => R;
 
-export interface ReduxFluentAction<
-  T extends string = string,
+export interface ActionCreatorWithPayloadCreator<
+  T extends string,
+  P,
+  M,
+  RP,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  RM
+> {
+  type: T;
+  toString(): T;
+
+  <Payload extends Error | RP>(payload?: Payload): Payload extends Error
+    ? ErrorFSA<Payload, M, T>
+    : FSA<T, P, M>;
+}
+
+export interface ActionCreator<T extends string, P, M, RP, RM>
+  extends ActionCreatorWithPayloadCreator<T, P, M, RP, RM> {
+  (): FSA<T, P, M>;
+}
+
+export interface ActionCreatorWithPayloadAndMetaCreators<
+  T extends string,
+  P,
+  M,
+  RP,
+  RM
+> extends ActionCreatorWithPayloadCreator<T, P, M, RP, RM> {
+  <Payload extends Error | RP>(
+    payload: Payload,
+    meta: RM,
+  ): Payload extends Error ? ErrorFSA<Payload, M, T> : FSA<T, P, M>;
+}
+
+export function createAction<T extends string, P = void, M = void>(
+  type: T,
+): ActionCreator<T, P, M, P, M>;
+
+export function createAction<
+  T extends string,
   P = void,
   M = void,
-> extends FSA<T, P, M> {
-  type: T;
-}
+  RP = void,
+  RM = void
+>(
+  type: T,
+  payloadCreator: (rawPayload: RP, rawMeta: RM, $type: T) => P,
+): ActionCreatorWithPayloadCreator<T, P, M, RP, RM>;
 
-export interface ReduxFluentActionError<
-  T extends string = string,
-  E extends Error = Error,
+export function createAction<
+  T extends string,
+  P = void,
   M = void,
-  > extends ErrorFSA<E, M> {
-  type: T;
-}
+  RP = void,
+  RM = void
+>(
+  type: T,
+  payloadCreator: (rawPayload: RP, rawMeta: RM, $type: T) => P,
+  metaCreator: (rawPayload: RP, rawMeta: RM, $type: T) => P,
+): ActionCreatorWithPayloadAndMetaCreators<T, P, M, RP, RM>;
 
-export type Formatter<T, R> = (rawPayload: any, rawMeta: any, T: T) => R;
-export type RFA<T extends string = string, P = any, M = any> = ReduxFluentAction<T, P, M>;
-export type RFAE<T extends string = string, P extends Error = Error, M = any> = ReduxFluentActionError<T, P, M>;
-
-export interface ActionCreator<T extends string, P, M> {
-  readonly type: T;
-  alias(payloadCreator?: Formatter<T, P>, metaCreator?: Formatter<M, P>): ActionCreator<T, P, M>;
-  <E extends Error = Error, RM = any>(rawPayload?: E, rawMeta?: RM): RFAE<T, E, M>
-  <RP = any, RM = any>(rawPayload?: RP, rawMeta?: RM): RFA<T, P, M>;
-}
-
-export function createAction<T extends string = string, P = void, M = void>(
+export function createAction<T extends string, P, M>(
   type: T,
   payloadCreator?: Formatter<T, P>,
   metaCreator?: Formatter<T, M>,
-): ActionCreator<T, P, M> {
-  const $payloadCreator = payloadCreator || ((p) => p);
-  const $metaCreator = metaCreator || ((_, m) => m);
+) {
+  const $creator = (rawPayload?: unknown, rawMeta?: unknown): FSA<T, P, M> => {
+    const action: FSA<T, P, M> = { type };
 
-  function $action(rawPayload?: any, rawMeta?: any): RFA<T, P, M> {
-    const payload: P = $payloadCreator(rawPayload, rawMeta, type);
-    const meta: M = $metaCreator(rawPayload, rawMeta, type);
+    const payload =
+      payloadCreator?.(rawPayload, rawMeta, type) ?? (rawPayload as P);
+    const meta = metaCreator?.(rawPayload, rawMeta, type) ?? (rawMeta as M);
 
-    const action: RFA<T, P, M> = { type };
-
-    if (payload !== undefined) {
-      action.error = payload instanceof Error;
+    if (typeof payload !== 'undefined') {
       action.payload = payload;
+
+      if (payload instanceof Error) {
+        action.error = true;
+      }
     }
 
-    if (meta !== undefined) {
+    if (typeof meta !== 'undefined') {
       action.meta = meta;
     }
 
-    return Object.freeze(action);
+    return action;
+  };
+
+  if (process.env.NODE_ENV !== 'production') {
+    Object.defineProperty($creator, 'name', {
+      configurable: true,
+      value: `action('${type}')`,
+    });
   }
 
-  Object.defineProperties($action, {
-    alias: { value: createAliasCreator<T, P, M>(type) },
-    name: { configurable: true, value: `action('${type}')` },
-    toString: { value: () => type },
-    type: { enumerable: true, value: type },
+  Object.defineProperty($creator, 'toString', {
+    value: () => type,
   });
 
-  // @ts-ignore TS2322 property `type` is defined in Object.defineProperties($action, ...)
-  return $action;
+  $creator.type = type;
+
+  return $creator;
 }

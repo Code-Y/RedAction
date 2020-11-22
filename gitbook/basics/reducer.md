@@ -1,13 +1,16 @@
 # Reducer
 
-A redux-fluent reducer is a simple function combinator, you can use it to build up composite behaviour by gluing small and dedicated functions together. 
+A redux-fluent reducer is a simple function combinator, you can use it to build
+up composite business logic by gluing small and dedicated functions together.
 
 ```typescript
 import { createReducer, ofType } from 'redux-fluent';
 
 export const greetingsReducer = createReducer('greetings')
   .actions(
-    ofType('Roger Waters', 'David Gilmour', 'Nick Mason', /* ... */).map(greetThePinkFloyd),
+    ofType('Roger Waters', 'David Gilmour', 'Nick Mason' /* ... */).map(
+      greetThePinkFloyd,
+    ),
     ofType('B.B. King').map(greetTheBluesBoy),
     greetEveryoneElse,
   )
@@ -19,7 +22,7 @@ ___
 
 ## Matching Actions
 
-Having to manually orchestrate the _"which action to respond to"_ impacts negatively on readability and expressiveness of your program.
+Manually orchestrating the _"which action to respond to"_ can negatively impact the readability and expressiveness of your program.
 redux-fluent abstracts orchestration into a clean and functional API that lets you focus on your business logic.
 No more switch-cases!
 
@@ -29,7 +32,7 @@ import { ofType } from 'redux-fluent';
 
 - Yup! It really works pretty much like [redux-observable#ofType](https://redux-observable.js.org/docs/basics/Epics.html)
 
-___
+---
 
 ## Handling Actions
 
@@ -47,7 +50,7 @@ ___
 ## The Counter Example
 
 If from one side _actions_ are meant to describe _"what happened"_,
-on the other side reducers are responsible for defining the state shape and its transition logic. 
+on the other side reducers are responsible for defining the state shape and its transition logic.
 
 {% codesandbox %}
 https://codesandbox.io/s/redux-fluent-the-counter-reducer-enoc2?fontsize=10&hidenavigation=1&theme=dark&module=%2Fsrc%2Fstore%2Fcounter%2Fcounter.reducers.ts&view=preview
@@ -73,8 +76,8 @@ export const reset = () => 0;
 ```typescript
 // counter.reducers.js
 import { ofType, createReducer } from 'redux-fluent';
-import * as actions from './counter.actions'
-import * as handlers from './counter.handlers'
+import * as actions from './counter.actions';
+import * as handlers from './counter.handlers';
 
 export const counterReducer = createReducer('todos')
   .actions(
@@ -89,7 +92,5 @@ export const counterReducer = createReducer('todos')
 import { createStore, combineReducers } from 'redux';
 import { counterReducer } from './counter.reducers';
 
-export const store = createStore(
-  combineReducers({ counter: counterReducer }),
-);
+export const store = createStore(combineReducers({ counter: counterReducer }));
 ```

@@ -2,20 +2,21 @@
 
 ## [README](/README.md)
 
-## [Basics](SUMMARY.md)
-  * [Action](basics/action.md)
-  * [Reducer](basics/reducer.md)
-  
 ## [Motivations](SUMMARY.md)
-  * [Design Goals](motivations/design-goals.md)
-  
+
+- [Design Goals](motivations/design-goals.md)
+
+## [Basics](SUMMARY.md)
+
+- [Action](basics/action.md)
+- [Reducer](basics/reducer.md)
+
 ## [Advanced](SUMMARY.md)
-  * [Aliasing Actions](advanced/aliasing-actions.md)
-  
+
+- [Working with Typescript](advanced/working-with-typescript.md)
+
 ## [Api Reference](SUMMARY.md)
-  * [createReducer](api-reference/create-reducer.md)
-  * [createAction](api-reference/create-action.md)
-  * [ofType](api-reference/of-type.md)
-  * [withConfig](api-reference/with-config.md)
-  * [createReducersMapObject](api-reference/create-reducers-map-object.md)
-  * [combineReducers](api-reference/combine-reducers.md)
+
+- [createReducer](api-reference/create-reducer.md)
+- [createAction](api-reference/create-action.md)
+- [ofType](api-reference/of-type.md)

@@ -13,11 +13,9 @@ yarn add redux-fluent redux flux-standard-action
 - NPM: [https://www.npmjs.com/package/redux-fluent](https://www.npmjs.com/package/redux-fluent)
 - UNPKG CDN: [https://unpkg.com/redux-fluent@latest/dist/redux-fluent.production.js](https://unpkg.com/redux-fluent@latest/dist/redux-fluent.production.js)
 
-
 ##### Stats
 
 - `3.2 kB` https://bundlephobia.com/result?p=redux-fluent
-
 
 ## Playground
 
@@ -40,6 +38,6 @@ yarn add redux-fluent redux flux-standard-action
 - [Github Issues](https://github.com/Code-Y/redux-fluent/issues)
 - [Submit a Pull Request](https://github.com/Code-Y/redux-fluent/pulls)
 
-***
+---
 
-*redux-fluent is a community-driven, entirely volunteer project and is not officially affiliated with or sponsored by any company.*
+_redux-fluent is a community-driven, entirely volunteer project and is not officially affiliated with or sponsored by any company._

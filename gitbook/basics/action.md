@@ -1,6 +1,7 @@
 # Action
 
-A redux-fluent action is a flux standard action by design. We wanted to adopt a clear design pattern, that's it. 
+A redux-fluent action creator outputs FSA actions to
+help facilitate interoperability with other systems:
 Please, refer to the [FSA documentation](https://github.com/redux-utilities/flux-standard-action) to understand why a Flux Standard Action _"is Useful, Simple and Human Friendly!"_
 
 ```typescript
@@ -22,9 +23,7 @@ export const deleteTodo = createAction('DELETE_TODO');
 ```typescript
 import { addTodo } from './todos.actions.js';
 
-store.dispatch(
-  addTodo({ title: 'Have some fun' }),
-);
+store.dispatch(addTodo({ title: 'Have some fun' }));
 ```
 
 <br />
@@ -33,7 +32,7 @@ ___
 ## Action Types
 
 We wanted to remove all the boilerplate that is normally involved in standard redux projects.
-You no longer need to either declare or export constants. 
+You no longer need to either declare or export constants.
 
 ```typescript
 import { addTodo } from './todos.actions.js';
@@ -48,5 +47,4 @@ ___
 ## All-In-One
 
 A redux-fluent action squeezes all the concepts of [action](https://redux.js.org/basics/actions#actions), [action type](https://redux.js.org/basics/actions#actions) and [action creator](https://redux.js.org/basics/actions#action-creators) together.
-All you need is a one-line declaration. That's it! 
-
+All you need is a one-line declaration. That's it!

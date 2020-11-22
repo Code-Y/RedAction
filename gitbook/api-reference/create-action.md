@@ -1,6 +1,6 @@
 # createAction
 
-Factory function for creating redux-fluent actions.
+Factory for redux-fluent action creators.
 
 ```typescript
 import { createAction } from 'redux-fluent';
@@ -17,11 +17,15 @@ createAction(type, payloadCreator?, metaCreator?);
 ## Returns
 
 ```typescript
-(rawPayload, rawMeta) => FluxStandardAction
+(rawPayload, rawMeta) => FluxStandardAction;
 ```
 
 ## Usage
 
 ```typescript
-createAction('action-type', () => Payload, () => Meta);
+createAction(
+  'action-type',
+  () => Payload,
+  () => Meta,
+);
 ```

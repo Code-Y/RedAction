@@ -1,4 +1,4 @@
-/* eslint-disable strict */
+/* eslint-disable */
 
 'use strict';
 
@@ -7,10 +7,11 @@ const webpack = require('webpack');
 const nodeExternals = require('webpack-node-externals');
 const pkg = require('./package');
 
-
 const ROOT = __dirname;
-const BUILD_DATE = new Date();
-const banner = env => `/**!
+const BUILD_DATE = new Date().toISOString();
+const { NODE_ENV = 'development' } = process.env;
+
+const banner = (env) => `/**!
   * @build-info ${env} - ${BUILD_DATE}
 
   * @name ${pkg.name}
@@ -26,8 +27,8 @@ const banner = env => `/**!
   * @license ${pkg.license}
 **/`;
 
-const config = ({ ENV } = {}) => ({
-  mode: ENV,
+const config = () => ({
+  mode: NODE_ENV,
   target: 'web',
   devtool: 'source-map',
   context: path.join(ROOT, 'src'),
@@ -37,26 +38,26 @@ const config = ({ ENV } = {}) => ({
   },
   output: {
     libraryTarget: 'commonjs2',
-    path: path.join(ROOT, 'dist'),
-    filename: `[name].${ENV}.js`,
+    path: path.join(ROOT, 'dist', NODE_ENV),
+    filename: `[name].${NODE_ENV}.js`,
   },
   module: {
     rules: [
       {
         enforce: 'pre',
-        test: /\.tsx?$/,
+        test: /\.[tj]sx?$/,
         loader: 'eslint-loader',
         exclude: /node_modules/,
         options: {
-          emitWarning: ENV === 'development',
+          emitWarning: NODE_ENV === 'development',
         },
       },
       {
-        test: /\.tsx?$/,
+        test: /\.[tj]sx?$/,
         exclude: /node_modules/,
         use: [
           {
-            loader: 'awesome-typescript-loader',
+            loader: 'ts-loader',
             options: {},
           },
         ],
@@ -68,21 +69,13 @@ const config = ({ ENV } = {}) => ({
   },
   plugins: [
     new webpack.BannerPlugin({
-      banner: banner(ENV),
+      banner: banner(NODE_ENV),
       raw: true,
     }),
     new webpack.DefinePlugin({
-      'process.env.NODE_ENV': JSON.stringify(ENV),
+      'process.env.NODE_ENV': JSON.stringify(NODE_ENV),
     }),
   ],
 });
 
-module.exports = () => {
-  const tasks = [].concat(config({ ENV: 'development' }));
-
-  if (process.env.NODE_ENV === 'production') {
-    tasks.push(config({ ENV: 'production' }));
-  }
-
-  return Promise.resolve(tasks);
-};
+module.exports = config;
